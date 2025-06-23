@@ -73,7 +73,43 @@ app.post('/order',async(req:any,res:any)=>{
     })
 })
 
+app.get('/depth', async(req:any, res:any)=>{
+    const depth : {
+        [price: string]:{
+            type: "bid" | "asks",
+            quantity : number,
+        }
+    } = {};
+    for(let i = 0; i<bids.length;i++){
+        if(!depth[bids[i].price]){
+            depth[bids[i].price] = {
+                quantity: bids[i].quantity,
+                type: "bid"
+            };
+        }else{
+            depth[bids[i].price].quantity += bids[i].quantity;
+        }
+    }
+    for (let i = 0; i < asks.length; i++) {
+    if (!depth[asks[i].price]) {
+      depth[asks[i].price] = {
+        quantity: asks[i].quantity,
+        type: "asks"
+      }
+    } else {
+      depth[asks[i].price].quantity += asks[i].quantity;
+    }
+  }
+  res.json({
+    depth
+  })
+})
 
+app.get('/balance/:userId', async (req:any,res:any)=>{
+    const userId = req.params.userId;
+    const user  = users.find(x => x.id == userId);
+
+})
 
 
 
